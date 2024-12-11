@@ -1,0 +1,69 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+\title{Sudoku Flask Application Deployment on Google App Engine}
+\author{Nguyen Trong Minh - 22BI13304}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+In this project, I created a simple Sudoku game application using the Flask framework and deployed it on Google App Engine. The Sudoku game allows users to interact with a pre-generated puzzle, where they can input their answers into an interactive grid. The app also provides basic validation to check if the submitted solution is correct.
+
+\section{Sudoku Flask Application}
+
+The Sudoku application was developed using the \texttt{Flask} framework, which is a lightweight Python web framework. The app provides a simple Sudoku puzzle that is displayed in a 9x9 grid. Some of the grid cells are pre-filled with numbers, while others are left empty for the user to solve.
+
+\subsection{App Structure}
+The project consists of the following key components:
+\begin{itemize}
+    \item \textbf{app.py}: This is the main Python script containing the game logic and routes. It defines the logic for generating a Sudoku puzzle, validating the solution, and rendering the HTML template for the game interface.
+    \item \textbf{index.html}: The HTML template for rendering the Sudoku board. The cells are displayed as form inputs, with pre-filled numbers and empty cells where users can enter their answers.
+    \item \textbf{style.css}: A simple CSS file to style the Sudoku grid and make the app visually appealing.
+\end{itemize}
+
+\subsection{Game Logic}
+The game includes basic logic to:
+\begin{itemize}
+    \item \textbf{Generate a Sudoku board}: A static 9x9 Sudoku board is generated, with some cells pre-filled and others left empty.
+    \item \textbf{Validate the solution}: The app checks whether the submitted solution satisfies Sudoku's rules, ensuring no duplicates in rows, columns, and 3x3 subgrids.
+\end{itemize}
+
+\section{Deployment on Google App Engine}
+
+To deploy the Flask application on Google App Engine, the following steps were taken:
+
+\subsection{Step 1: Setting Up the Project}
+First, I created a Google Cloud project in the Google Cloud Console. Then, I configured the project to use the Google App Engine by enabling the necessary APIs, including:
+\begin{itemize}
+    \item Google App Engine API
+    \item Cloud Build API
+\end{itemize}
+
+\subsection{Step 2: Configuring App Engine}
+For the deployment, the following files were configured:
+\begin{itemize}
+    \item \textbf{requirements.txt}: This file lists all Python dependencies required for the project, including \texttt{Flask}.
+    \item \textbf{app.yaml}: This is the configuration file for Google App Engine, specifying the runtime environment (Python 3.9), instance class (F2), and handler for static files.
+\end{itemize}
+
+\subsection{Step 3: Deploying the App}
+To deploy the app, I used the \texttt{gcloud} command-line tool. The following steps were executed:
+\begin{itemize}
+    \item \texttt{gcloud app create} -- Initializes Google App Engine for the project.
+    \item \texttt{gcloud app deploy} -- Deploys the application to Google App Engine.
+\end{itemize}
+Once the deployment was complete, the app became accessible via a public URL, where users can interact with the Sudoku game.
+
+\subsection{Step 4: Testing the Application}
+After deployment, I tested the app by visiting the URL provided by Google App Engine. The Sudoku board was displayed, and the game functioned as expected. Users were able to input their solutions, and the app validated whether their answers were correct.
+
+\section{Conclusion}
+
+This project successfully demonstrates how to build a basic interactive web application using Flask and deploy it on Google App Engine. The Sudoku app is simple yet effective in showcasing web application deployment. The deployment process was straightforward with the help of Google Cloud’s tools and infrastructure. This app could be expanded in the future by adding features such as dynamic puzzle generation, difficulty levels, and user authentication.
+
+\end{document}
