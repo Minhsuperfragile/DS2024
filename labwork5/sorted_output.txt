@@ -1,0 +1,11 @@
+20	/home/user/file1.txt
+30	/home/user/Documents/file2.txt
+30	/home/user/Documents/file3.txt
+24	/var/www/html/index.html
+30	/home/user/Downloads/photo.jpg
+31	/home/user/Music/album/song.mp3
+85	/home/user/Documents/really/long/path/to/a/file/that/keeps/going/on/forever/file1.txt
+85	/home/user/Documents/really/long/path/to/a/file/that/keeps/going/on/forever/file2.txt
+22	/home/user/my file.txt
+30	/home/user/my (files)/file.txt
+31	/home/user/hello world/file.txt

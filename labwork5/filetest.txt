@@ -1,0 +1,11 @@
+/home/user/file1.txt
+/home/user/Documents/file2.txt
+/home/user/Documents/file3.txt
+/var/www/html/index.html
+/home/user/Downloads/photo.jpg
+/home/user/Music/album/song.mp3
+/home/user/Documents/really/long/path/to/a/file/that/keeps/going/on/forever/file1.txt
+/home/user/Documents/really/long/path/to/a/file/that/keeps/going/on/forever/file2.txt
+/home/user/my file.txt
+/home/user/my (files)/file.txt
+/home/user/hello world/file.txt
