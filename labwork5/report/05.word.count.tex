@@ -1,0 +1,43 @@
+\documentclass{article}
+\usepackage{graphicx}
+
+\title{Longest Path in a Set of Files - MapReduce Implementation in C++}
+\author{Your Name(s)}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+This report presents the implementation of a MapReduce framework to find the longest file path in a distributed set of files, using C++. The files are distributed across multiple laptops, and each file contains one path per line. The task is to identify the longest file path by length.
+
+\section{MapReduce Implementation}
+The system consists of two main components: the Mapper and the Reducer. The Mapper processes each input line (representing a file path), calculates its length, and outputs a key-value pair. The Reducer receives these pairs, compares the lengths, and outputs the longest file path(s).
+
+\subsection{Mapper}
+The Mapper performs the following steps:
+\begin{enumerate}
+  \item Reads each line representing a file path.
+  \item Computes the length of the file path.
+  \item Emits a key-value pair, where the key is the length of the path, and the value is the file path itself.
+\end{enumerate}
+
+\subsection{Reducer}
+The Reducer performs the following steps:
+\begin{enumerate}
+  \item Receives key-value pairs from the Mapper.
+  \item Compares the path lengths and keeps track of the longest path(s).
+  \item Outputs the longest path(s) after processing all input pairs.
+\end{enumerate}
+
+\section{Diagram of the Process}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{mapreduce_diagram.png}
+    \caption{Flowchart of the MapReduce process for finding the longest path.}
+\end{figure}
+
+\section{Conclusion}
+The C++ implementation of the MapReduce framework successfully identifies the longest file path by length in a distributed environment. This approach efficiently handles large datasets and provides an optimal solution to the problem.
+
+\end{document}
+
