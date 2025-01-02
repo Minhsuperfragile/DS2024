@@ -1,81 +1,98 @@
-from constant import Signal, BUFFERSIZE  # Ensure these constants are correctly defined in constant.py
-from time import sleep
-import os
 from mpi4py import MPI
+import os
 
-def send_signal(comm, signal, dest):
-    """Send a signal to a specific destination."""
-    comm.send(signal.value, dest=dest)
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
 
-def recv_signal(comm, source) -> bytes:
-    """Receive a signal from a specific source."""
-    return comm.recv(source=source)
+def upload(argument):
+    contents = argument[0]
+    filename = argument[1]
 
-def send_file(comm, file_path, dest) -> None:
-    """Send a file to the destination process."""
-    if not os.path.exists(file_path):
-        print(f"File not found: {file_path}")
-        comm.send(Signal.ERROR, dest=dest)
-        return
+    if not os.path.exists(f"labwork3/file_tranfer/{filename}"):
+        return "File does not exist"
+
+    with open(f"labwork3/file_tranfer/{filename}", "rb") as file:
+        content = file.read()
+
+    contents["argument"] = [content, filename]
+
+    comm.send(contents, dest=0)
+
+    response = comm.recv(source=0)
     
-    file_name = os.path.basename(file_path)
-    file_size = os.path.getsize(file_path)
-    print(f"Sending file: {file_name} ({file_size} bytes)")
+    return response
 
-    # Send file start signal and details
-    comm.send(Signal.SEND_A_FILE, dest=dest)
-    comm.send(file_name.encode(), dest=dest)  # Send file name
-    comm.send(file_size, dest=dest)  # Send file size
 
-    # Send file content
-    with open(file_path, 'rb') as file:
-        while chunk := file.read(BUFFERSIZE):
-            comm.send(chunk, dest=dest)
-        
-    comm.send(Signal.DONE, dest=dest)
-    print(f"File sent: {file_name}")
+def download(argument):
+    contents = argument[0]
+    filename = argument[1]
 
-def request_file(comm, file_name, dest, save_file=None):
-    """Request a file from the server."""
-    if save_file is None:
-        save_file = file_name
+    contents['argument'] = filename
 
-    send_signal(comm, Signal.REQUEST_A_FILE, dest)
+    comm.send(contents, dest=0)
 
-    # Send file name
-    comm.send(file_name.encode(), dest=dest)
+    content = comm.recv(source=0)
 
-    # Receive response
-    response = recv_signal(comm, dest)
-    if response == Signal.ERROR:
-        print("Error: File not found")
-        return
+    if not content:
+        return "File not found"
+    else:
+        with open(f"labwork3/file_tranfer/{filename}", "wb") as f:
+            f.write(content)
+        return f"File {filename} downloaded successfully."
 
-    # Save the file
-    with open(save_file, 'wb') as file:
-        while True:
-            data = comm.recv(source=dest)
 
-            if data == Signal.DONE:
-                break
+def list(argument):
+    contents = argument[0]
+    comm.send(contents, dest=0)
 
-            file.write(data)
+    return comm.recv(source=0)
+
+
 
 if __name__ == "__main__":
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
-    print(f"Client Rank: {rank}, Total Clients: {size}")
+    if rank != 0: 
+        print("hello")
+        options = {
+            "UPLOAD": upload,
+            "DOWNLOAD": download,
+            "LIST": list,
+        }
+        while True:
+            try:
+      
+               
+                userInput = input(f"[Client {rank}]: Enter operation (UPLOAD <file_name>, DOWNLOAD <file_name>, LIST) or QUIT to exit: ").strip()
+                
 
-    SERVER_RANK = 0  # Assuming the server runs on rank 0
+     
+                userInput = userInput.split(" ")
+                userInput = [x for x in userInput if x]  # Loại bỏ chuỗi rỗng
+                operation = userInput[0].upper() if len(userInput) > 0 else ""
 
-    try:
-        # Uncomment desired operation
-        send_file(comm, 'file-transfered/client-send/send0.txt', dest=SERVER_RANK)
-        #request_file(comm, "send0.txt", SERVER_RANK)
-    except Exception as e:
-        print(f"Error: {e}")
+                if len(userInput) > 1:
+                    argument = userInput[1:]
+                else:
+                    argument = []
 
-    # Close the server
-    send_signal(comm, Signal.CLOSE_SERVER, SERVER_RANK)
-    MPI.Finalize()
+                contents = {
+            "operation": operation,
+            "argument": '',
+            "rank": rank,
+        }
+
+                if operation == "QUIT":
+                    comm.send(contents, dest=0)
+                    print(f"[Client {rank}] Exiting program...")
+                    break
+
+                if operation not in options:
+                    print("Invalid operation. Please try again.")
+                    continue
+
+        # Gọi hàm tương ứng
+                response = options[operation]([contents] + argument)
+                print("Response from server:", response)
+
+            except Exception as e:
+                print(f"Error: {e}")
+                continue
